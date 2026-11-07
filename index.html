@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff4fa">
+  <meta name="description" content="Lojinha da Ágatha: pulseirinhas, acessórios e presentes feitos com carinho.">
+  <title>Lojinha da Ágatha</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Lojinha da Ágatha, início"><span class="brand-mark">A</span><span>Lojinha da <b>Ágatha</b><small>Pequenos detalhes, grandes sorrisos</small></span></a>
+    <button class="cart-button" id="cartOpen" aria-label="Abrir carrinho">Sacola <span id="cartCount">0</span></button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">FEITO COM CARINHO ✨</span>
+        <h1>Um cantinho cheio de <em>cor e alegria!</em></h1>
+        <p>Pulseirinhas, acessórios e pequenas fofuras para presentear e colecionar.</p>
+        <a class="primary-link" href="#produtos">Ver produtos <span>↓</span></a>
+      </div>
+      <div class="hero-art" aria-label="Ilustração decorativa">
+        <div class="sun"></div><div class="doodle-heart">♥</div>
+        <div class="bracelet"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="hero-sticker">feito à mão<br>com amor</div>
+      </div>
+    </section>
+
+    <section class="trust-note"><span>💗</span><p><b>Um recadinho importante:</b> as compras devem ser feitas ou autorizadas por um pai, mãe ou responsável maior de 18 anos. Chame seu responsável para escolher com você!</p></section>
+
+    <section class="products-section" id="produtos">
+      <div class="section-heading"><div><span class="eyebrow">NOSSA VITRINE</span><h2>Escolha suas fofuras</h2></div><div id="filters" class="filters"></div></div>
+      <div id="productGrid" class="product-grid"></div>
+      <p id="emptyState" class="empty hidden">Ainda não há produtos nesta categoria. Volte em breve! 💕</p>
+    </section>
+  </main>
+
+  <footer><div class="footer-brand"><span class="brand-mark">A</span><b>Lojinha da Ágatha</b></div><p>Uma lojinha pequena, feita com muito carinho. 💗</p><small>Compras e pagamentos somente com autorização e acompanhamento de um responsável adulto.</small><button class="admin-entry" id="adminOpen">Área do responsável</button></footer>
+
+  <div class="overlay hidden" id="cartOverlay">
+    <aside class="drawer">
+      <div class="drawer-head"><div><span class="eyebrow">SUA ESCOLHA</span><h2>Sua sacolinha</h2></div><button class="icon-button" data-close="cartOverlay">✕</button></div>
+      <div id="cartItems" class="cart-items"></div>
+      <div class="cart-bottom"><div class="total-line"><span>Total</span><b id="cartTotal">R$ 0,00</b></div><button class="primary-button" id="checkoutOpen">Continuar com responsável</button><small>O pedido só será enviado após a confirmação do responsável.</small></div>
+    </aside>
+  </div>
+
+  <div class="overlay hidden" id="checkoutOverlay">
+    <section class="modal">
+      <button class="icon-button modal-close" data-close="checkoutOverlay">✕</button>
+      <span class="eyebrow">ETAPA DO RESPONSÁVEL</span><h2>Vamos confirmar o pedido?</h2>
+      <p>Um adulto responsável deve preencher os dados e concluir o pedido. Não informe dados de pagamento de outra pessoa sem autorização.</p>
+      <form id="checkoutForm">
+        <label>Nome do responsável<input name="adultName" required maxlength="80" placeholder="Nome e sobrenome"></label>
+        <label>WhatsApp do responsável<input name="adultPhone" required inputmode="tel" placeholder="(DDD) 99999-9999"></label>
+        <label class="check-label"><input type="checkbox" name="adultConfirm" required> Confirmo que sou maior de 18 anos e autorizo este pedido.</label>
+        <button class="primary-button" type="submit">Enviar pedido pelo WhatsApp</button>
+      </form>
+    </section>
+  </div>
+
+  <div class="overlay hidden" id="adminOverlay">
+    <section class="modal admin-modal">
+      <button class="icon-button modal-close" data-close="adminOverlay">✕</button>
+      <span class="eyebrow">ACESSO DO RESPONSÁVEL</span><h2>Painel da lojinha</h2>
+      <div id="adminLogin">
+        <p>Entre para administrar produtos, pedidos e dados de pagamento.</p>
+        <label>Senha de demonstração<input id="adminPassword" type="password" placeholder="Digite a senha"></label>
+        <button class="primary-button" id="loginButton">Entrar</button>
+        <small class="warning-text">Primeiro acesso: senha <b>agatha2026</b>. Troque no arquivo app.js antes de publicar.</small>
+      </div>
+      <div id="adminPanel" class="hidden">
+        <div class="admin-tabs"><button class="tab active" data-tab="manage">Produtos</button><button class="tab" data-tab="orders">Pedidos</button><button class="tab" data-tab="settings">Loja e Pix</button></div>
+        <section id="tab-manage" class="tab-content">
+          <h3>Cadastrar produto</h3>
+          <form id="productForm" class="admin-form">
+            <input type="hidden" name="id">
+            <label>Nome<input name="name" required maxlength="70" placeholder="Ex.: Pulseira colorida"></label>
+            <div class="two-col"><label>Categoria<input name="category" required placeholder="Pulseiras"></label><label>Preço (R$)<input name="price" type="number" min="0.01" step="0.01" required></label></div>
+            <div class="two-col"><label>Estoque<input name="stock" type="number" min="0" step="1" required></label><label>Emoji (opcional)<input name="image" maxlength="8" placeholder="💖"></label></div>
+            <label>Foto ou vídeo do produto<input name="mediaFile" id="mediaFile" type="file" accept="image/*,video/mp4,video/webm,video/quicktime"><small class="upload-help">Escolha uma foto ou vídeo curto. Nesta versão de demonstração, o limite é 1 MB por arquivo.</small></label>
+            <div id="mediaPreview" class="media-preview hidden"></div>
+            <label>Descrição<textarea name="description" rows="2" maxlength="180" placeholder="Conte um pouquinho sobre o produto"></textarea></label>
+            <div class="two-col"><button class="primary-button" type="submit">Salvar produto</button><button class="secondary-button" type="button" id="clearProduct">Limpar</button></div>
+          </form>
+          <h3>Produtos cadastrados</h3><div id="adminProducts" class="admin-list"></div>
+        </section>
+        <section id="tab-orders" class="tab-content hidden"><h3>Pedidos recebidos</h3><div id="adminOrders" class="admin-list"></div></section>
+        <section id="tab-settings" class="tab-content hidden">
+          <h3>Dados da loja</h3><form id="settingsForm" class="admin-form">
+            <label>WhatsApp que recebe pedidos (com DDI e DDD)<input name="whatsapp" placeholder="5519999999999" inputmode="numeric"></label>
+            <label>Chave Pix<input name="pixKey" placeholder="Cadastre a chave Pix do responsável"></label>
+            <label>Nome do titular do Pix<input name="pixOwner" placeholder="Nome do titular"></label>
+            <label>Mensagem de pagamento<textarea name="paymentMessage" rows="2"></textarea></label>
+            <button class="primary-button" type="submit">Salvar configurações</button>
+          </form>
+          <p class="warning-text">A chave Pix ficará visível aos clientes no resumo do pedido. Use somente uma chave controlada pelo responsável.</p>
+        </section>
+        <button class="secondary-button logout" id="logoutButton">Sair do painel</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast hidden" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
