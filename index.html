@@ -68,9 +68,9 @@
       <span class="eyebrow">ACESSO DO RESPONSÁVEL</span><h2>Painel da lojinha</h2>
       <div id="adminLogin">
         <p>Entre para administrar produtos, pedidos e dados de pagamento.</p>
-        <label>Senha de demonstração<input id="adminPassword" type="password" placeholder="Digite a senha"></label>
-        <button class="primary-button" id="loginButton">Entrar</button>
-        <small class="warning-text">Primeiro acesso: senha <b>agatha2026</b>. Troque no arquivo app.js antes de publicar.</small>
+        <button class="primary-button" id="loginButton" type="button">Entrar com Google</button>
+        <p id="authStatus" class="warning-text" role="status"></p>
+        <small class="warning-text">Somente contas cadastradas como administradoras no Supabase poderão acessar este painel.</small>
       </div>
       <div id="adminPanel" class="hidden">
         <div class="admin-tabs"><button class="tab active" data-tab="manage">Produtos</button><button class="tab" data-tab="orders">Pedidos</button><button class="tab" data-tab="settings">Loja e Pix</button></div>
@@ -105,6 +105,7 @@
   </div>
 
   <div class="toast hidden" id="toast" role="status"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
