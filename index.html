@@ -44,7 +44,7 @@
     <aside class="drawer">
       <div class="drawer-head"><div><span class="eyebrow">SUA ESCOLHA</span><h2>Sua sacolinha</h2></div><button class="icon-button" data-close="cartOverlay">✕</button></div>
       <div id="cartItems" class="cart-items"></div>
-      <div class="cart-bottom"><div class="total-line"><span>Total</span><b id="cartTotal">R$ 0,00</b></div><button class="primary-button" id="checkoutOpen">Continuar com responsável</button><small>O pedido só será enviado após a confirmação do responsável.</small></div>
+      <div class="cart-bottom"><div class="total-line"><span>Total</span><b id="cartTotal">R$ 0,00</b></div><button class="primary-button" id="checkoutOpen">Continuar com responsável</button><small>O estoque será reservado ao confirmar o pedido. Pagamento Pix sujeito à conferência.</small></div>
     </aside>
   </div>
 
@@ -57,8 +57,9 @@
         <label>Nome do responsável<input name="adultName" required maxlength="80" placeholder="Nome e sobrenome"></label>
         <label>WhatsApp do responsável<input name="adultPhone" required inputmode="tel" placeholder="(DDD) 99999-9999"></label>
         <label class="check-label"><input type="checkbox" name="adultConfirm" required> Confirmo que sou maior de 18 anos e autorizo este pedido.</label>
-        <button class="primary-button" type="submit">Enviar pedido pelo WhatsApp</button>
+        <button class="primary-button" type="submit">Gerar pedido e instruções Pix</button>
       </form>
+      <div id="pixResult" class="hidden" role="status"></div>
     </section>
   </div>
 
@@ -81,7 +82,7 @@
             <label>Nome<input name="name" required maxlength="70" placeholder="Ex.: Pulseira colorida"></label>
             <div class="two-col"><label>Categoria<input name="category" required placeholder="Pulseiras"></label><label>Preço (R$)<input name="price" type="number" min="0.01" step="0.01" required></label></div>
             <div class="two-col"><label>Estoque<input name="stock" type="number" min="0" step="1" required></label><label>Emoji (opcional)<input name="image" maxlength="8" placeholder="💖"></label></div>
-            <label>Foto ou vídeo do produto<input name="mediaFile" id="mediaFile" type="file" accept="image/*,video/mp4,video/webm,video/quicktime"><small class="upload-help">Escolha uma foto ou vídeo curto. Nesta versão de demonstração, o limite é 1 MB por arquivo.</small></label>
+            <label>Foto ou vídeo do produto<input name="mediaFile" id="mediaFile" type="file" accept="image/*,video/mp4,video/webm,video/quicktime"><small class="upload-help">Escolha uma foto ou vídeo curto. Limite de 10 MB por arquivo; arquivos enviados ao Supabase Storage.</small></label>
             <div id="mediaPreview" class="media-preview hidden"></div>
             <label>Descrição<textarea name="description" rows="2" maxlength="180" placeholder="Conte um pouquinho sobre o produto"></textarea></label>
             <div class="two-col"><button class="primary-button" type="submit">Salvar produto</button><button class="secondary-button" type="button" id="clearProduct">Limpar</button></div>
