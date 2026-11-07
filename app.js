@@ -1,7 +1,7 @@
 /* Agatha Gifts: catálogo e reservas no Supabase; pagamento somente presencial. */
 const SUPABASE_URL = "https://jfseknlktcbcfkmpctzd.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_LZfK-itbz6paiKoaKP-G-Q_a4uIggJL";
-const TURNSTILE_SITE_KEY = "CONFIGURE_SITE_KEY_AQUI";
+const TURNSTILE_SITE_KEY = "0x4AAAAAAF4LQeSsgqK7vdK9";
 const ADMIN_AUTH_REDIRECT_URL = "https://agathagift.iamjohnlevi.workers.dev/";
 const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 let adminAuthorized = false;
@@ -154,10 +154,10 @@ async function loadOrders(){
   if(!adminAuthorized)return;
   const {data:orders,error}=await supabaseClient.from("orders").select("id,adult_name,adult_phone,status,total,created_at,order_items(product_name,quantity,unit_price)").order("created_at",{ascending:false}).limit(100);
   if(error){el("adminOrders").textContent="Não foi possível carregar pedidos: "+error.message;return}
-  el("adminOrders").innerHTML=(orders||[]).map(o=>`<div class="admin-item"><div class="grow"><b>Reserva ${esc(o.id.slice(0,8))} · ${money(o.total)}</b><small>${esc(o.adult_name)} · ${esc(o.adult_phone)} · ${new Date(o.created_at).toLocaleString("pt-BR")}</small><small>Status: ${esc(o.status)}</small><small>${(o.order_items||[]).map(i=>esc(i.product_name)+" × "+i.quantity).join("; ")}</small></div>${o.status==='reserved'?`<button data-paid="${o.id}">Confirmar retirada</button><button data-cancel="${o.id}">Cancelar</button>`:""}</div>`).join("")||"<p class='empty'>Nenhum pedido recebido.</p>";
+  el("adminOrders").innerHTML=(orders||[]).map(o=>`<div class="admin-item"><div class="grow"><b>Reserva ${esc(o.id.slice(0,8))} · ${money(o.total)}</b><small>${esc(o.adult_name)} · ${esc(o.adult_phone)} · ${new Date(o.created_at).toLocaleString("pt-BR")}</small><small>Status: ${esc(o.status)}</small><small>${(o.order_items||[]).map(i=>esc(i.product_name)+" × "+i.quantity).join("; ")}</small></div>${['pending','confirmed'].includes(o.status)?`<button data-paid="${o.id}">Confirmar retirada</button><button data-cancel="${o.id}">Cancelar</button>`:""}</div>`).join("")||"<p class='empty'>Nenhum pedido recebido.</p>";
   document.querySelectorAll("[data-paid],[data-cancel]").forEach(b=>b.onclick=async()=>{
-    const status=b.dataset.paid?"collected":"cancelled",id=b.dataset.paid||b.dataset.cancel;
-    if(!confirm(status==="collected"?"Confirmar que o produto foi retirado e pago presencialmente?":"Cancelar pedido e devolver estoque?"))return;
+    const status=b.dataset.paid?"completed":"cancelled",id=b.dataset.paid||b.dataset.cancel;
+    if(!confirm(status==="completed"?"Confirmar que o produto foi retirado e pago presencialmente?":"Cancelar pedido e devolver estoque?"))return;
     b.disabled=true;
     const {error}=await supabaseClient.rpc("set_reservation_status",{p_order_id:id,p_status:status});
     if(error)toast("Erro: "+error.message);else{await loadOrders();await loadCatalog();toast("Pedido atualizado.")}
