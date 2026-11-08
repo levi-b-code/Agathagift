@@ -92,3 +92,18 @@
     aspect-ratio: 1 / 1;
   }
 }
+
+/* Ágatha em fundo branco, sem círculo, adaptada para todas as telas */
+.hero-art.hero-agatha {
+  width:100%; max-width:480px; height:auto; aspect-ratio:auto;
+  border-radius:0; overflow:visible; background:transparent;
+  display:flex; align-items:flex-end; justify-content:center;
+}
+.hero-agatha .agatha-portrait {
+  display:block; width:100%; height:auto; max-height:470px;
+  object-fit:contain; object-position:center bottom;
+}
+@media (max-width:760px) {
+  .hero-art.hero-agatha { width:min(100%,360px); aspect-ratio:auto; height:auto; }
+  .hero-agatha .agatha-portrait { max-height:360px; }
+}
