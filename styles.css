@@ -168,3 +168,10 @@
     z-index: 2;
   }
 }
+
+/* Recorte discreto da parte inferior da estampa do coelhinho.
+   Não desloca nem altera o tamanho da personagem. */
+.hero-art.hero-agatha { overflow: hidden; }
+.hero-art.hero-agatha .agatha-portrait {
+  clip-path: inset(0 0 8% 0);
+}

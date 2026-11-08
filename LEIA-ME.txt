@@ -1,0 +1,14 @@
+LOJINHA DA ÁGATHA - ATUALIZAÇÃO VISUAL
+
+Todos os arquivos deste ZIP devem ficar na pasta RAIZ do repositório GitHub:
+- index.html
+- styles.css
+- agatha-personagem.png
+- favicon.svg
+
+Substitua os correspondentes no GitHub e clique em Commit changes.
+MANTENHA o app.js existente, que contém produtos, reservas e autenticação.
+
+Modificação: ocultar parte inferior da ilustração do coelho no retrato,
+sem deslocar a Ágatha ou mudar seu tamanho. A correção CSS também
+se aplica ao layout móvel.
