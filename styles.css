@@ -107,3 +107,64 @@
   .hero-art.hero-agatha { width:min(100%,360px); aspect-ratio:auto; height:auto; }
   .hero-agatha .agatha-portrait { max-height:360px; }
 }
+
+/* Destaque da Ágatha: personagem grande, sem moldura, atrás do aviso. */
+@media (min-width: 761px) {
+  .hero {
+    min-height: 465px;
+    padding-top: 0;
+    padding-bottom: 0;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 28px;
+  }
+  .hero-art.hero-agatha {
+    align-self: end;
+    justify-self: center;
+    width: 100%;
+    max-width: 435px;
+    height: 465px;
+    overflow: visible;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    display: flex;
+    align-items: flex-end;
+  }
+  .hero-agatha .agatha-portrait {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-fit: contain;
+    object-position: center bottom;
+  }
+  .trust-note {
+    position: relative;
+    z-index: 2;
+  }
+}
+@media (max-width: 760px) {
+  .hero {
+    padding-top: 30px;
+    padding-bottom: 0;
+    gap: 12px;
+  }
+  .hero-art.hero-agatha {
+    width: min(100%, 360px);
+    height: auto;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+  .hero-agatha .agatha-portrait {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    object-fit: contain;
+  }
+  .trust-note {
+    position: relative;
+    z-index: 2;
+  }
+}
