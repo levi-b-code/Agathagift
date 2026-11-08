@@ -157,24 +157,50 @@ async function uploadProductMedia(file){
   if(error)throw new Error("Falha no envio da mídia: "+error.message);
   return supabaseClient.storage.from("product-media").getPublicUrl(path).data.publicUrl;
 }
+// Ao finalizar uma edição, sempre retornar ao modo "novo produto".
+function resetProductForm(){
+  const form=el("productForm");
+  form.reset();
+  form.elements["id"].value="";
+  pendingMedia=null;
+  previewMedia(null);
+}
 el("productForm").onsubmit=async e=>{
-  e.preventDefault();if(!adminAuthorized)return toast("Acesso não autorizado.");
-  const form=e.target,f=new FormData(form),id=f.get("id"),old=data.products.find(x=>x.id===id);
-  const price=Number(f.get("price")),stock=Number(f.get("stock")),name=String(f.get("name")||"").trim();
-  if(!name||!Number.isFinite(price)||price<=0||!Number.isInteger(stock)||stock<0|| (id && !uuidPattern.test(id)))return toast("Confira os dados do produto.");
-  const button=form.querySelector('[type="submit"]');if(button)button.disabled=true;
+  e.preventDefault();
+  if(!adminAuthorized)return toast("Acesso não autorizado.");
+  const form=e.target,f=new FormData(form);
+  const id=String(f.get("id")||"").trim();
+  const old=id?data.products.find(x=>x.id===id):null;
+  const price=Number(f.get("price")),stock=Number(f.get("stock"));
+  const name=String(f.get("name")||"").trim();
+  if(id&&!old)return toast("Produto em edição não encontrado. Clique em Limpar para cadastrar um novo.");
+  if(!name||!Number.isFinite(price)||price<=0||!Number.isInteger(stock)||stock<0||(id&&!uuidPattern.test(id)))
+    return toast("Confira os dados do produto.");
+  const button=form.querySelector('[type="submit"]');
+  if(button)button.disabled=true;
   try{
     const uploaded=await uploadProductMedia(mediaInput.files?.[0]);
-    const payload={name,category:String(f.get("category")||"Outros").trim()||"Outros",
-      description:String(f.get("description")||"").trim(),price,stock,
-      media_urls:uploaded?[uploaded]:old?.media_urls||[]};
-    const result=id?await supabaseClient.from("products").update(payload).eq("id",id):
-      await supabaseClient.from("products").insert(payload);
+    const payload={
+      name,
+      category:String(f.get("category")||"Outros").trim()||"Outros",
+      description:String(f.get("description")||"").trim(),
+      price,stock,
+      media_urls:uploaded?[uploaded]:(old?.media_urls||[])
+    };
+    const result=id
+      ? await supabaseClient.from("products").update(payload).eq("id",id).select("id").single()
+      : await supabaseClient.from("products").insert(payload).select("id").single();
     if(result.error)throw result.error;
-    form.reset();pendingMedia=null;previewMedia(null);await loadCatalog();toast("Produto salvo no Supabase!");
-  }catch(err){toast("Não foi possível salvar: "+err.message)}finally{if(button)button.disabled=false}
+    resetProductForm();
+    await loadCatalog();
+    toast(id?"Produto atualizado!":"Novo produto cadastrado!");
+  }catch(err){
+    toast("Não foi possível salvar: "+(err?.message||"Erro desconhecido"));
+  }finally{
+    if(button)button.disabled=false;
+  }
 };
-el("clearProduct").onclick=()=>{el("productForm").reset();pendingMedia=null;previewMedia(null)};
+el("clearProduct").onclick=resetProductForm;
 async function loadOrders(){
   if(!adminAuthorized)return;
   const {data:orders,error}=await supabaseClient.from("orders").select("id,adult_name,adult_phone,status,total,created_at,order_items(product_name,quantity,unit_price)").order("created_at",{ascending:false}).limit(100);
