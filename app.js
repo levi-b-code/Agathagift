@@ -29,13 +29,38 @@ function renderProducts(){if(!catalogReady){el("productGrid").innerHTML="<p clas
 function addToCart(id){const p=data.products.find(x=>x.id===id);if(!p||!p.is_active||((cart[id]||0)>=p.stock))return toast("Quantidade máxima disponível atingida.");cart[id]=(cart[id]||0)+1;renderCartCount();toast("Adicionado à reserva! 💗")}
 function renderCartCount(){el("cartCount").textContent=Object.values(cart).reduce((a,b)=>a+b,0)}
 function renderCart(){const entries=Object.entries(cart).filter(([id,q])=>q>0);el("cartItems").innerHTML=entries.length?entries.map(([id,q])=>{const p=data.products.find(x=>x.id===id);if(!p)return "";return `<div class="cart-row"><div class="cart-emoji">${esc(p.image||"🎁")}</div><div><b>${esc(p.name)}</b><small>${money(p.price)} cada</small></div><div class="qty"><button data-qty="${id}" data-delta="-1">−</button><b>${q}</b><button data-qty="${id}" data-delta="1">+</button></div></div>`}).join(""):`<p class="empty">Sua lista de reservas está vazia. 💕</p>`;const total=entries.reduce((s,[id,q])=>s+(data.products.find(p=>p.id===id)?.price||0)*q,0);el("cartTotal").textContent=money(total);document.querySelectorAll("[data-qty]").forEach(b=>b.onclick=()=>{const id=b.dataset.qty,next=(cart[id]||0)+Number(b.dataset.delta),p=data.products.find(x=>x.id===id);if(next<=0)delete cart[id];else if(next<=p.stock)cart[id]=next;else toast("Não temos essa quantidade em estoque.");renderCart();renderCartCount()});el("checkoutOpen").disabled=!entries.length;el("checkoutOpen").style.opacity=entries.length?1:.5}
-el("checkoutOpen").onclick=()=>{if(!Object.keys(cart).length)return;hide("cartOverlay");el("checkoutForm").classList.remove("hidden");el("reservationResult").classList.add("hidden");show("checkoutOverlay")};
+el("checkoutOpen").onclick=()=>{if(!Object.keys(cart).length)return;hide("cartOverlay");el("checkoutForm").classList.remove("hidden");el("reservationResult").classList.add("hidden");show("checkoutOverlay");initializeReservationChallenge()};
 let reservationSubmitting = false;
-function resetReservationChallenge(){ if(window.turnstile && reservationWidgetId !== null)window.turnstile.reset(reservationWidgetId); }
 let reservationWidgetId = null;
-window.onAgathaTurnstileReady = function(){
-  if(!window.turnstile || TURNSTILE_SITE_KEY.startsWith("CONFIGURE_"))return;
-  reservationWidgetId=window.turnstile.render("reservationCaptcha",{sitekey:TURNSTILE_SITE_KEY,action:"reservation"});
+let reservationChallengeInitializing = false;
+function initializeReservationChallenge(){
+  if(reservationWidgetId !== null || reservationChallengeInitializing)return;
+  if(!window.turnstile || typeof window.turnstile.render !== "function")return;
+  if(TURNSTILE_SITE_KEY.startsWith("CONFIGURE_"))return;
+  const container=el("reservationCaptcha");
+  if(!container || el("checkoutOverlay").classList.contains("hidden"))return;
+  reservationChallengeInitializing=true;
+  try{
+    reservationWidgetId=window.turnstile.render(container,{
+      sitekey:TURNSTILE_SITE_KEY,
+      action:"reservation",
+      "error-callback":()=>{console.warn("Turnstile: falha ao verificar desafio.");},
+      "expired-callback":()=>{console.info("Turnstile: token expirado.");}
+    });
+  }catch(error){
+    console.error("Não foi possível inicializar o Turnstile:",error);
+    reservationWidgetId=null;
+  }finally{reservationChallengeInitializing=false;}
+}
+function resetReservationChallenge(){
+  if(window.turnstile && reservationWidgetId !== null){
+    try{window.turnstile.reset(reservationWidgetId)}catch(error){console.warn("Falha ao reiniciar Turnstile",error)}
+  }
+}
+window.onAgathaTurnstileReady=function(){
+  // O script pode carregar antes de o formulário estar visível.
+  // Inicializamos somente quando o modal estiver aberto.
+  initializeReservationChallenge();
 };
 el("checkoutForm").onsubmit=async e=>{
   e.preventDefault();if(!supabaseClient)return toast("Conexão indisponível.");
