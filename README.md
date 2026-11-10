@@ -49,3 +49,10 @@ Se você já abriu a loja antes no mesmo navegador, os exemplos antigos podem co
 
 ## Upload de fotos e vídeos (demonstração)
 O painel administrativo agora inclui o campo **Foto ou vídeo do produto**, com pré-visualização antes de salvar. Aceita imagens e vídeos MP4, WebM ou MOV, limitados a 1 MB por arquivo nesta versão. A mídia é armazenada no navegador (localStorage), portanto fica apenas naquele aparelho/navegador. Para que todos os clientes vejam as mídias e para sincronizar vários aparelhos, será necessário integrar armazenamento online e banco de dados, por exemplo Supabase Storage.
+
+
+Banco de Dados:
+
+Subase
+
+https://supabase.com/dashboard/org/iahupdhazhpedwxtnnud
